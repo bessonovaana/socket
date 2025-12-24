@@ -34,6 +34,7 @@ while True:
         operator = data.get('network', {}).get('operator', '')
         network_type = data.get('network', {}).get('networkType', 0)
         signal_level = data.get('network', {}).get('signalLevel', 0)
+        rsrp = data.get('network', {}).get('rsrp', 0)
         cell_class = data.get('network', {}).get('cellClass', '')
         network_type_name = data.get('network', {}).get('networkTypeName', '')
         cells_json = data.get('network', {}).get('cells', '')
@@ -54,8 +55,8 @@ while True:
             INSERT INTO telephony 
             (Lat, Lon, Alt, Speed, Accuracy, Timestamp, Time, 
              Operator, NetworkType, SignalLevel, CellClass, 
-             NetworkTypeName, IsWifi, IsMobile, IsConnected, Cells)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+             NetworkTypeName, IsWifi, IsMobile, IsConnected, Cells, RSRP)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)
         """, (
             lat,
             lon,
@@ -72,13 +73,14 @@ while True:
             data.get('network', {}).get('isWifi', False),
             data.get('network', {}).get('isMobile', False),
             data.get('network', {}).get('isConnected', False),
-            cells_json
+            cells_json,
+            rsrp
         ))
         
         conn.commit()  
         
-        print(f"Запись #{cursor.rowcount} добавлена в БД (RSRP={signal_level})")
-        
+        print(f"Запись добавлена в БД (RSRP={rsrp})")
+        socket.send_string("OK")
     except KeyboardInterrupt:
         print("\n Сервер остановлен пользователем")
         break
@@ -87,9 +89,7 @@ while True:
         socket.send_string("ERROR")
         conn.rollback() 
 
-
 cursor.close()
 conn.close()
 socket.close()
-context.term()
 print(" Все соединения закрыты")
