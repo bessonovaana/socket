@@ -14,7 +14,6 @@ cursor = conn.cursor()
 cursor.execute("""
     SELECT Lat, Lon, RSRP, Cells 
     FROM telephony 
-    ORDER BY Id DESC LIMIT 2000
 """)
 results = cursor.fetchall()
 
