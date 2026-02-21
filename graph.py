@@ -65,7 +65,6 @@ ticks_rsrp = rsrp_min + ticks_norm * (rsrp_max - rsrp_min)
 cbar.set_ticks(ticks_norm)
 cbar.set_ticklabels([f'{v:.0f} дБм' for v in ticks_rsrp])
 
-plt.tight_layout()
 plt.show()
 
 cursor.close()
